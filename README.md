@@ -1,0 +1,2 @@
+# BLANK-DataAnalysis_SCDFXIBM
+The use news outlet media to assist in searching for information on social media using "keywords". Multiple news outlets and trusted journalist sites act as trusted sites to build a pyramid structure where non-trusted sites are at the bottom and trusted sites are at the top. Hence, when a number of sites are repeating the same info not included in the trusted sites we can be notified vice versa if in case trusted sites only have 1 mention unlike other sites.
