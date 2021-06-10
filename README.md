@@ -30,8 +30,7 @@ This will be show web browsers of the relevant search. The fake news will be ind
 
 
 **Roadmap**
-
-As we do not have the relevant skills 
+We will need to use SQL with Python to create the database and ensuring its able to be use in phone apps. PHP and MySQL will be use to create a custom search engine. 
 
 d) A hyperlink to your detailed solution (Long description of your solution) *
 e) Project Roadmap/ Proposed timeline
