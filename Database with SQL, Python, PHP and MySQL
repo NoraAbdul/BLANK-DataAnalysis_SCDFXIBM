@@ -1,0 +1,316 @@
+First, we need to create a database to store the data. This can be done viua SQL which enable quick retrieval of data from database. 
+
+
+Limitations and Restrictions
+A maximum of 32,767 databases can be specified on an instance of SQL Server.
+
+Prerequisites
+The CREATE DATABASE statement must run in autocommit mode (the default transaction management mode) and is not allowed in an explicit or implicit transaction.
+
+Recommendations
+- The master database should be backed up whenever a user database is created, modified, or dropped.
+- When you create a database, make the data files as large as possible based on the maximum amount of data you expect in the database.
+
+Security - Permissions
+- Requires CREATE DATABASE permission in the master database, or requires CREATE ANY DATABASE, or ALTER ANY DATABASE permission.
+- To maintain control over disk use on an instance of SQL Server, permission to create databases is typically limited to a few login accounts.
+
+
+
+
+To be able to operate our system in an application, we need to create and manipulate SQL databases with Python
+
+For Python and SQL to communicate with each other.
+
+- We need to install the MySQL Connector Python library. 
+use pip:
+    pip install mysql-connector-python
+
+- We are also going to be using pandas.
+pip install pandas
+
+
+
+# Importing Libraries
+
+import mysql.connector
+from mysql.connector import Error
+import pandas as pd
+
+# Connecting to MySQL Server
+
+def create_server_connection(host_name, user_name, user_password):
+    connection = None
+    try:
+        connection = mysql.connector.connect(
+            host=host_name,
+            user=user_name,
+            passwd=user_password
+        )
+        print("MySQL Database connection successful")
+    except Error as err:
+        print(f"Error: '{err}'")
+
+    return connection
+    
+    
+    
+  
+  
+ # To create a database 
+ 
+    def create_database(connection, query):
+    cursor = connection.cursor()
+    try:
+        cursor.execute(query)
+        print("Database created successfully")
+    except Error as err:
+        print(f"Error: '{err}'")
+
+mysql>
+
+define a query to create the database and call the function:
+
+create_database_query = "CREATE DATABASE SCDF"
+create_database(connection, create_database_query) 
+
+
+# However, our database will store websites of specific news in relation of SCDF that can be from credible or non-credible sources. 
+# To be able to do this, we need to create our own search engine using the open source technologies like PHP and MySQL
+
+Database Part:
+Connect to MySQL, we can any use any of the UI based free tools e.g. Squirrel, HeidiSQL or DBVisualiser or the MySQL admin console. 
+Once connected, let run the following SQL which will create a table called SEARCH_ENGINE.
+
+# An SQL statement which will create a table to store the details or information in database
+CREATE TABLE SEARCH_ENGINE (
+       `id` INT(11) NOT NULL AUTO_INCREMENT,
+       `pageurl` VARCHAR(255) NOT NULL,
+       `pagecontent` TEXT NOT NULL,
+       PRIMARY KEY (`id`))
+
+
+Creating the Form:
+The form will be used by the end users to perform their search by entering in a query. This will also enable the users to restrict the count of results which needs to be shown on the form.
+Let us call this file - 'index.php' which is a simple search forms having a button. 
+Here we will use GET instead of POST. Thus the information is made quite visible in the address bar.
+
+# Our index.php file 
+<html>
+       <head>
+             <title> My search engine </title>
+       </head>
+       <body>
+             < form action = 'search.php' method = 'GET' >
+                    < center >
+                           <h1 > My Search Engine </h1 >
+                           < input type = 'text' size='90' name = 'search' >
+                           </ br >
+                           </ br >
+                           < input type = 'submit' name = 'submit' value = 'Search source code' >
+                           < option > 10 </ option >
+                           < option > 20 </ option >
+                           < option > 50 </ option >
+                    </ center >
+             </ form >
+       </ body >
+</ html > 
+
+
+
+Processing the Query:
+Create a new file 'search.php' which is the page where the results from the search will be listed or shown. This file is divided into following sections -
+
+Connect to the database first:
+
+# DB connection: 
+       mysql_connect ( "localhost", "USER_NAME", "PASSWORD" ) ; 
+       mysql_select_db ( "DB_NAME" );
+
+
+# Next, construct the query along with the tokens users have entered:
+       $search_exploded = explode ( " ", $search );
+       $x = 0; 
+       foreach( $search_exploded as $search_each ) {
+             $x++;
+             $construct = " ";
+             if( $x == 1 )
+                    $construct .= "keywords LIKE '%$search_each%' ";
+             else
+                    $construct .= "AND keywords LIKE '%$search_each%' ";
+       }
+       $construct = " SELECT * FROM SEARCH_ENGINE WHERE $construct ";
+       $run = mysql_query( $construct ); 
+  
+  
+# Fetch the results from the database and present it to the user. If the search doesn't yield any result, we should show an appropriate message to the user as shown below: 
+   if ($foundnum == 0)  
+         echo "Sorry, there are no matching result for <b> $search </b>. 
+         </ br > 
+         </ br > 1. Try more general words. for example: If you want to search 'how to create a website' then use general keyword like 'create' 'website' 
+         </ br > 2. Try different words with similar meaning 
+         </ br > 3. Please check your spelling"; 
+                else {  
+                       echo "$foundnum results found !<p>"; 
+                       while ( $runrows = mysql_fetch_assoc($run) ) { 
+                              $title = $runrows ['title'];  
+                              $desc = $runrows ['description']; 
+                              $url = $runrows ['url']; 
+                              echo "<a href='$url'> <b> $title </b> </a> <br> $desc <br> <a href='$url'> $url </a> <p>";  
+                }
+         }
+
+
+# The Complete Search.PHP file : 
+<?php 
+      $button = $_GET [ 'submit' ]; 
+      $search = $_GET [ 'search' ]; 
+      
+      if( !$button ) 
+            echo "you didn't submit a keyword"; 
+      
+      else { 
+            if( strlen( $search ) <= 1 ) 
+                   echo "Search term too short"; 
+            else {  
+                   echo "You searched for <b> $search </b> <hr size='1' > </ br > "; 
+                   mysql_connect( "localhost","USERNAME","PASSWORD") ; 
+                   mysql_select_db("DBNAME"); 
+                   
+                   $search_exploded = explode ( " ", $search ); 
+                   $x = 0; 
+                   foreach( $search_exploded as $search_each ) { 
+                          $x++;  
+                          $construct = "";
+                          if( $x == 1 ) 
+                                 $construct .="keywords LIKE '%$search_each%'"; 
+                          else 
+                                 $construct .="AND keywords LIKE '%$search_each%'"; 
+                    }
+                    
+                    $construct = " SELECT * FROM SEARCH_ENGINE WHERE $construct "; 
+                    $run = mysql_query( $construct ); 
+                    
+                    $foundnum = mysql_num_rows($run); 
+                    
+                    if ($foundnum == 0) 
+                           echo "Sorry, there are no matching result for <b> $search </b>. </br> </br> 1. Try more general words. for example: If you want to search 'how to create a website' then use general keyword like 'create' 'website' </br> 2. Try different words with similar meaning </br> 3. Please check your spelling"; 
+                    else { 
+                           echo "$foundnum results found !<p>"; 
+                           
+                           while( $runrows = mysql_fetch_assoc( $run ) ) { 
+                                  $title = $runrows ['title']; 
+                                  $desc = $runrows ['description']; 
+                                  $url = $runrows ['url']; 
+                                  
+                                  echo "<a href='$url'> <b> $title </b> </a> <br> $desc <br> <a href='$url'> $url </a> <p>"; 
+                                  
+                            } 
+                     } 
+            } 
+     } 
+?>
+
+
+
+Search Engine Architecture 
+- WebCrawler, indexer and document storage which should be capable of handling a large volume of documents may be 1 million or even more. 
+- Follow the test driven development which would help to enforce good design and modular code.
+- Have the ability to support various strategies for things like the index, document store, search etc.
+
+A typical search engine consists of few parts -
+- A crawler which is used to pull external documents.
+- An index which is the place where the documents are stored in an inverted tree
+- A document store to keep the documents.
+
+
+
+THE CRAWLER:
+- Come up with a list of URL’s by feeding the crawler with a list of links which contain lots of links as listed. Crawl them and harvest as we go down the list
+
+- Another approach is to download a list of URL’s and then use that list. Since our aim is to get the actual website only, a simple parser to extract the appropriate data out will be quite straight forward as shown below
+# The parser –
+                $file_handle = fopen( " Quantcast-Top-Million.txt ", "r" );
+ 
+       while ( !feof ( $file_handle ) ) {
+             $line = fgets( $file_handle );
+             if( preg_match( '/^\d+/',$line ) ) { # if it starts with some amount of digits
+                    $tmp = explode( "\t",$line );
+                    $rank = trim( $tmp[0] );
+                    $url = trim( $tmp[1] );
+                    if( $url != 'Hidden profile' ) { # Hidden profile appears sometimes just ignore then
+                           echo $	
+			}
+		}
+	}
+	fclose( $file_handle );
+
+
+DOWNLOADING: 
+Downloading the data is time consuming. Hence we should be prepared for a longer wait by a very basic crawler in PHP, using a file_get_contents and sticking in a url. 
+A single threaded crawler simply loops over every url in the file, extracts down the content and then saves the content to the disk. 
+It stores the url and the content in a document since we might need to use the URL for ranking purpose and also it is helpful to keep a track where the document came from. 
+We should keep in mind that we may run out of file system storage limits while trying to store lots of documents in one folder.
+
+# The crawler 
+        $file_handle = fopen("urllist.txt", "r");
+         while (!feof($file_handle)) {
+                 $url = trim(fgets($file_handle));
+                 $content = file_get_contents($url);
+                 $document = array($url,$content);
+                 $serialized = serialize($document);
+                 $fp = fopen('./documents/'.md5($url), 'w');
+                 fwrite($fp, $serialized);
+                 fclose($fp);
+         }
+         fclose($file_handle);
+         
+
+
+
+THE INDEX: 
+The index 
+- needs to store its contents to disk and retrieve them.
+- needs to be able to clear itself when we decide to regenerate things.
+- should validate documents that its storing.
+Having these tasks defined, let us have the following interface in place -
+
+# The interface
+        interface iindex {
+                 public function storeDocuments($name,array $documents);
+                 public function getDocuments($name);
+                 public function clearIndex();
+                 public function validateDocument(array $document);
+         }
+         
+         
+THE DOCUMENT STORE:
+The document store is a somewhat odd if we are going to index things that we probably already have what we wanted to be stored somewhere else. 
+The most obvious thing in this case is that the documents are already in some database.
+
+THE INDEXER:
+Build our search is to create the indexer. 
+An indexer takes a document, breaks it apart and feeds it into the index, and also possibly to the document store depending upon our implementation.
+
+INDEXING:
+1. Set the time limit to unlimited since the indexing process might take a longer time than expected.
+2. Define the position of the index and the documents that are going to stay in order to avoid the errors.
+
+SEARCHING: 
+Searching only require a single method as shown below -
+#The search interface –
+                interface isearch {
+                       public function dosearch($searchterms);
+       }
+       
+
+
+
+
+
+
+
+
+
+
+
