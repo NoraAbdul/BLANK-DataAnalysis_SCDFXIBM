@@ -7,7 +7,7 @@ Our team will be able to retrieve the data through a custom search engine that w
 Hence, related websites will be shown through the next following page. There will be indication that the related sites are fake or not. Multiple news outlets and trusted journalist sites act as trusted sites to build a pyramid structure where non-trusted sites are at the bottom and trusted sites are at the top. Hence, when a number of sites are repeating the same info not included in the trusted sites, we can be notified vice versa if in case trusted sites only have 1 mention unlike other sites.
 With this idea, our team will be focusing on news in relations to SCDF as there are a number of websites (credible and non-credible sources) with relation to a specific news or updates related to SCDF. This system will be accessible through an application that users can download in their android or ios smartphone.
 
-[Pitch Video](https://www.youtube.com/)
+[Pitch Video](https://youtu.be/GMuAYAmlAYI)
   
   
   
