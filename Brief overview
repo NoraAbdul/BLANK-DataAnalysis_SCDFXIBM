@@ -1,0 +1,15 @@
+(https://www.gov.sg/article/covid-19-clarifications "Fake News Being Identified")
+Fake news is normally spread through the sharing of post on social media such as Facebook, Twitter, Whatsapp etc. 
+Our team will gather the data through a custom search engine that will be able to search related news by keywords. 
+Hence, related websites will be shown through the next following page. There will be indication that the related sites are fake or not. 
+With this idea, our team will be focusing news in relations to SCDF as there are a number of websites (credible and non-credible sources) with relation to a specific news or updates related to SCDF. 
+
+This system will be accessible through an application that users can download in their android or ios smartphone.
+
+The following will show how our application will work. 
+
+These group of websites will be transmitted to the web server. 
+Then the web server will submit a database request (keywords or question) to our database server via SQL. 
+This will then prompt a database reply back to the web server with the results with SQL as well. 
+Hence the web server will send the files, via PHP server processing, that can be in html, jpg, css or js to the browser displays page. 
+This will be show web browsers of the relevant search. The fake news will be indicated in the display
